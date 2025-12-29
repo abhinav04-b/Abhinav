@@ -25,10 +25,11 @@ app.get('/api/hero', (req, res) => res.status(200).json({ name: 'Abhinav', subti
 // --- Serve Static Frontend Files ---
 const buildPath = path.join(process.cwd(), 'dist');
 app.use(express.static(buildPath));
-app.get('*', (req, res) => {
+app.use((req, res) => {
   res.sendFile(path.join(buildPath, 'index.html'));
 });
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
