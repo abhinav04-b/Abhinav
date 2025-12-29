@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "name": "Abhinav Kumar",
+    "subtitle": "Web Developer",
+    "bio": "Passionate student learning CSE from DIATM. Crafting clean, high-performance web experiences. ",
+    "photoUrl": "/hero.jpg",
+    "status": "Learning MERN"
+  },
+  "projects": [],
+  "contacts": [
+    {
+      "id": "c1",
+      "platform": "GitHub",
+      "value": "abhinav04-b",
+      "url": "https://github.com/abhinav04-b",
+      "iconName": "Github"
+    },
+    {
+      "id": "c2",
+      "platform": "LinkedIn",
+      "value": "Abhinav Kumar",
+      "url": "https://www.linkedin.com/in/abhinav-kumar-bb89872a1/",
+      "iconName": "Linkedin"
+    },
+    {
+      "id": "c4",
+      "platform": "Email",
+      "value": "abhinav41205@gmail.com",
+      "url": "mailto:abhinav41205@gmail.com",
+      "iconName": "Mail"
+    },
+    {
+      "id": "c5",
+      "platform": "Phone",
+      "value": "+91-9693197475",
+      "url": "tel:+919693197475",
+      "iconName": "Phone"
+    }
+  ],
+  "blogs": [
+    {
+      "id": "b1",
+      "title": "My Setup Upgrade 🚀",
+      "date": "Feb 10, 2024",
+      "content": "Finally upgraded my workspace with a new monitor and mechanical keyboard.",
+      "fullContent": "I have been waiting for months to get this setup done. The Keychron K2 is absolutely amazing for typing long sessions of code. Combined with the 4K LG monitor, the productivity boost is real!",
+      "mediaUrl": "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=800&q=80",
+      "mediaType": "image",
+      "caption": "The new battlestation setup! 💻✨"
+    }
+  ]
+}
