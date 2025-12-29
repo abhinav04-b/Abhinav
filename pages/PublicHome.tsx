@@ -311,11 +311,16 @@ export const PublicHome: React.FC = () => {
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
-    getFullData().then(fetchedData => {
+    // 1. Call the API function we built earlier
+    getFullData()
+      .then((fetchedData) => {
+        console.log("Live Data from MongoDB:", fetchedData);
         setData(fetchedData);
-    }).catch(() => {
+      })
+      .catch((err) => {
+        console.error("API Error:", err);
         setError(true);
-    });
+      });
   }, []);
 
   if (error) return (
