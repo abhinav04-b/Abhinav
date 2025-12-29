@@ -52,7 +52,8 @@ app.use(express.static(path.join(__dirname, '../dist')));
 
 // 2. The "catch-all" route: If the user goes to /about or /admin, 
 // send them index.html so React Router can take over.
-app.get('*', (req, res) => {
+app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
