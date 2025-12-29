@@ -3,7 +3,7 @@
     "name": "Abhinav Kumar",
     "subtitle": "Web Developer",
     "bio": "Passionate student learning CSE from DIATM. Crafting clean, high-performance web experiences. ",
-    "photoUrl": "/hero.jpg",
+    "photoUrl": "../public/hero.jpg",
     "status": "Learning MERN"
   },
   "projects": [],
