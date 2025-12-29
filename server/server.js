@@ -1,35 +1,57 @@
-// server/server.js (Updated to connect to MongoDB)
-import express from 'express';
-import path from 'path';
-import cors from 'cors';
-import mongoose from 'mongoose'; // Import Mongoose
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
-
-// Load connection string from environment variables for security
-const MONGO_URI = process.env.MONGO_URI; 
-
-// Connect to MongoDB
-mongoose.connect(MONGO_URI)
-  .then(() => console.log('MongoDB Connected Successfully!'))
-  .catch(err => console.error('MongoDB connection error:', err)); //
-
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
-// --- API Routes (Connect these to Mongoose Models later) ---
-app.get('/api/hero', (req, res) => res.status(200).json({ name: 'Abhinav', subtitle: 'Connected to DB', bio: '', photoUrl: '' }));
-// Add more API routes here (e.g., /api/projects, /api/blogs)
+// 1. Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log("Connected to MongoDB Atlas"))
+  .catch(err => console.error("Could not connect", err));
 
-// --- Serve Static Frontend Files ---
-const buildPath = path.join(process.cwd(), 'dist');
-app.use(express.static(buildPath));
-app.use((req, res) => {
-  res.sendFile(path.join(buildPath, 'index.html'));
+// 2. Define a "Schema" (tells Mongo what your data looks like)
+const PortfolioSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  projects: Array
 });
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+const Portfolio = mongoose.model('Portfolio', PortfolioSchema);
+
+// 3. Update your Routes
+app.get('/api/content', async (req, res) => {
+  const data = await Portfolio.findOne();
+  res.send(data);
 });
 
+app.post('/api/content', async (req, res) => {
+  try {
+    // This finds the first document and updates it with the new data from the Admin Panel.
+    // { upsert: true } creates the document if it doesn't exist yet.
+    const updatedData = await Portfolio.findOneAndUpdate(
+      {}, 
+      req.body, 
+      { new: true, upsert: true }
+    );
+    res.status(200).json(updatedData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error updating portfolio content");
+  }
+});
+const PORT = process.env.PORT || 5000;
+const path = require('path');
+
+// 1. Serve the static files from the React app build folder
+// Note: Use 'dist' if you use Vite, or 'build' if you use Create React App
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// 2. The "catch-all" route: If the user goes to /about or /admin, 
+// send them index.html so React Router can take over.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
+});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
