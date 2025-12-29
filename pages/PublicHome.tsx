@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Linkedin, Instagram, Mail, ArrowUpRight, Code, MapPin, Send, X, Play } from 'lucide-react';
 import { AppData, Project, BlogPost, ContactLink } from '../types';
 import { getFullData } from '../services/api'; // Switched to API
-import { getDB } from '../services/storage';
 import { BentoGrid, BentoCard } from '../components/BentoGrid';
 
 // --- Helper: YouTube ID Extractor ---
@@ -312,10 +311,12 @@ export const PublicHome: React.FC = () => {
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchedData = getDB();
-    setData(fetchedData);
-}, []);
-
+    getFullData().then(fetchedData => {
+        setData(fetchedData);
+    }).catch(() => {
+        setError(true);
+    });
+  }, []);
 
   if (error) return (
       <div className="h-screen bg-cyber-black flex flex-col items-center justify-center text-white gap-4">
