@@ -1,37 +1,71 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 1. Connect to MongoDB
+// 1. Connect to MongoDB Atlas
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("Connected to MongoDB Atlas"))
   .catch(err => console.error("Could not connect", err));
 
-// 2. Define a "Schema" (tells Mongo what your data looks like)
+// 2. Comprehensive Schema matching your db.json
 const PortfolioSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  projects: Array
+  hero: {
+    name: String,
+    subtitle: String,
+    bio: String,
+    photoUrl: String,
+    status: String
+  },
+  projects: [{
+    id: String,
+    title: String,
+    description: String,
+    image: String,
+    link: String,
+    technologies: [String]
+  }],
+  contacts: [{
+    id: String,
+    platform: String,
+    value: String,
+    url: String,
+    iconName: String
+  }],
+  blogs: [{
+    id: String,
+    title: String,
+    date: String,
+    content: String,
+    fullContent: String,
+    mediaUrl: String,
+    mediaType: String,
+    caption: String
+  }]
 });
 
 const Portfolio = mongoose.model('Portfolio', PortfolioSchema);
 
-// 3. Update your Routes
+// 3. API Routes
+// GET: Fetch all data
 app.get('/api/content', async (req, res) => {
-  const data = await Portfolio.findOne();
-  // If database is empty, send an empty object so the frontend doesn't crash
-  res.send(data || { title: "", description: "", projects: [] });
+  try {
+    const data = await Portfolio.findOne();
+    // Return MongoDB data or empty defaults if DB is new
+    res.json(data || { hero: {}, projects: [], contacts: [], blogs: [] });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch content" });
+  }
 });
 
+// POST: Update all data (Admin Panel)
 app.post('/api/content', async (req, res) => {
   try {
-    // This finds the first document and updates it with the new data from the Admin Panel.
-    // { upsert: true } creates the document if it doesn't exist yet.
     const updatedData = await Portfolio.findOneAndUpdate(
       {}, 
       req.body, 
@@ -39,24 +73,18 @@ app.post('/api/content', async (req, res) => {
     );
     res.status(200).json(updatedData);
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Error updating portfolio content");
+    res.status(500).json({ error: "Failed to update content" });
   }
 });
-const PORT = process.env.PORT || 5000;
-const path = require('path');
 
-// 1. Serve the static files from the React app build folder
-// Note: Use 'dist' if you use Vite, or 'build' if you use Create React App
-app.use(express.static(path.join(__dirname, '../dist')));
+// 4. Serve Static Frontend Files
+const distPath = path.join(__dirname, '../dist');
+app.use(express.static(distPath));
 
-// 2. The "catch-all" route: If the user goes to /about or /admin, 
-// send them index.html so React Router can take over.
-// This regex matches everything (.*)
+// Express 5 specific catch-all route using regex to match everything EXCEPT /api
 app.get(/^(?!\/api).+/, (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist/index.html'));
+  res.sendFile(path.join(distPath, 'index.html'));
 });
+
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-
-
