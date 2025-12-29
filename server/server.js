@@ -24,7 +24,8 @@ const Portfolio = mongoose.model('Portfolio', PortfolioSchema);
 // 3. Update your Routes
 app.get('/api/content', async (req, res) => {
   const data = await Portfolio.findOne();
-  res.send(data);
+  // If database is empty, send an empty object so the frontend doesn't crash
+  res.send(data || { title: "", description: "", projects: [] });
 });
 
 app.post('/api/content', async (req, res) => {
