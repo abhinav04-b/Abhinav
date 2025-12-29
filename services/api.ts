@@ -1,6 +1,7 @@
 import { AppData, BlogPost, ContactLink, HeroData, Project } from '../types';
+// api.ts
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-const API_URL = 'http://localhost:5000';
 
 // Helper to handle response
 const handleResponse = async (response: Response) => {
